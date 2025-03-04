@@ -1,0 +1,14 @@
+{
+  "name": "vidnestapi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "googleapis": "^39.2.0"
+  }
+}
