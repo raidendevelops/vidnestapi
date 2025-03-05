@@ -19,7 +19,7 @@ exports.handler = async function(event, context) {
                 {
                     id: 1,
                     title: "SML Movie: Snow Day",
-                    description: "ffsf",
+                    description: "Junior, Joseph, Cody, and Jeffy have a snow day! \n https://smlmerch.com",
                     thumbnail: "libr/img/test.jpg"
                 }
             ]
