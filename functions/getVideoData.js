@@ -31,15 +31,19 @@ let nextVideoId = Object.keys(videos).length + 1;
 exports.handler = async function(event, context) {
     if (event.httpMethod === "POST") {
         try {
+            // Parse the incoming request body
             const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
 
+            // Check if all required fields are provided
             if (!title || !description || !creator || !video || !thumbnail) {
+                console.error("Missing required fields", { title, description, creator, video, thumbnail });
                 return {
                     statusCode: 400,
                     body: JSON.stringify({ error: "Missing required video fields" })
                 };
             }
 
+            // Create a new video object
             const newVideo = {
                 id: nextVideoId++,
                 title,
@@ -52,7 +56,10 @@ exports.handler = async function(event, context) {
                 dislikes: 0
             };
 
+            // Store the video in-memory
             videos[newVideo.id] = newVideo;
+
+            console.log("New video added:", newVideo);  // Debugging log
 
             return {
                 statusCode: 201,
@@ -63,6 +70,7 @@ exports.handler = async function(event, context) {
                 body: JSON.stringify({ success: true, video: newVideo })
             };
         } catch (error) {
+            console.error("Failed to process the request", error);  // Log the error for debugging
             return {
                 statusCode: 500,
                 body: JSON.stringify({ error: "Failed to process request" })
@@ -70,6 +78,7 @@ exports.handler = async function(event, context) {
         }
     }
 
+    // Handling GET requests
     const { id, getallvideos, search } = event.queryStringParameters;
 
     if (getallvideos === "true") {
@@ -99,6 +108,7 @@ exports.handler = async function(event, context) {
         };
     }
 
+    // Fetch a specific video by its ID
     if (!id) {
         return {
             statusCode: 400,
