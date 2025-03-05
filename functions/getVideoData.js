@@ -1,4 +1,4 @@
-// videos.js
+// getvideodata.js
 
 // In-memory data for videos
 const videos = {
@@ -26,65 +26,8 @@ const videos = {
     }
 };
 
-// Add a new video to the in-memory data
-function addNewVideo(videoData) {
-    if (!videoData || !videoData.title || !videoData.description || !videoData.video || !videoData.thumbnail) {
-        console.log("Invalid video data");
-        return false;
-    }
-    const newId = Object.keys(videos).length + 1;
-    videos[newId] = {
-        id: newId,
-        title: videoData.title,
-        description: videoData.description,
-        likes: 0,
-        dislikes: 0,
-        creator: '@testuser',
-        creatorProfilePic: "libr/img/testimg.jpg",
-        video: videoData.video,
-        thumbnail: videoData.thumbnail
-    };
-    return true;
-}
-
-// Handler for the "uploadVideo" function
-exports.uploadVideo = async function(event, context) {
-    try {
-        const videoData = JSON.parse(event.body);
-        if (addNewVideo(videoData)) {
-            return {
-                statusCode: 200,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ success: true })
-            };
-        } else {
-            return {
-                statusCode: 400,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ success: false, error: "Invalid video data" })
-            };
-        }
-    } catch (error) {
-        console.error("Error processing upload:", error);
-        return {
-            statusCode: 500,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ success: false, error: "Internal server error" })
-        };
-    }
-};
-
 // Handler for the "getVideoData" function
-exports.getVideoData = async function(event, context) {
+exports.handler = async function(event, context) { // Corrected export
     const { id, getallvideos, search } = event.queryStringParameters;
 
     if (getallvideos === 'true') {
@@ -140,6 +83,3 @@ exports.getVideoData = async function(event, context) {
         body: JSON.stringify(video)
     };
 };
-
-exports.uploadVideo.handler = exports.uploadVideo;
-exports.getVideoData.handler = exports.getVideoData;
