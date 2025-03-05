@@ -44,8 +44,13 @@ exports.handler = async function(event, context) {
         };
     }
 
+    // Return video data along with CORS headers
     return {
         statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Origin": "*", // Allow requests from any domain (adjust for security as needed)
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(video)
     };
 };
