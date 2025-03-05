@@ -26,6 +26,10 @@ let videos = {
 
 // Add a new video to the in-memory data
 function addNewVideo(videoData) {
+    if (!videoData || !videoData.title || !videoData.description || !videoData.video || !videoData.thumbnail){
+        console.log("invalid video data");
+        return false;
+    }
     const newId = Object.keys(videos).length + 1;
     videos[newId] = {
         id: newId,
@@ -38,29 +42,50 @@ function addNewVideo(videoData) {
         video: videoData.video, // URL from Filestack
         thumbnail: videoData.thumbnail // URL for the thumbnail image
     };
+    return true;
 }
 
 // Handler for the "uploadVideo" function
 exports.uploadVideo = async function(event, context) {
-    const videoData = JSON.parse(event.body);
-
-    addNewVideo(videoData);
-
-    return {
-        statusCode: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ success: true })
-    };
+    try {
+        const videoData = JSON.parse(event.body);
+        if(addNewVideo(videoData)){
+            return {
+                statusCode: 200,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ success: true })
+            };
+        } else {
+            return {
+                statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ success: false, error: "Invalid video data" })
+            };
+        }
+    } catch (error) {
+        console.error("Error processing upload:", error);
+        return {
+            statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ success: false, error: "Internal server error" })
+        };
+    }
 };
+exports.uploadVideo.handler = exports.uploadVideo;
 
 // Handler for the "getVideoData" function
 exports.getVideoData = async function(event, context) {
-    const { id, getallvideos } = event.queryStringParameters; // Get video ID or 'getallvideos' parameter
-    
-    // If 'getallvideos=true' parameter is provided, return all videos
+    const { id, getallvideos } = event.queryStringParameters;
+
     if (getallvideos === 'true') {
         return {
             statusCode: 200,
@@ -72,7 +97,6 @@ exports.getVideoData = async function(event, context) {
         };
     }
 
-    // Handle individual video fetch
     if (!id) {
         return {
             statusCode: 400,
@@ -82,9 +106,8 @@ exports.getVideoData = async function(event, context) {
 
     const videoId = parseInt(id, 10);
 
-    // Check if the video exists in the in-memory data
     const video = videos[videoId];
-    
+
     if (!video) {
         return {
             statusCode: 404,
@@ -92,7 +115,6 @@ exports.getVideoData = async function(event, context) {
         };
     }
 
-    // Return video data along with CORS headers
     return {
         statusCode: 200,
         headers: {
@@ -102,3 +124,4 @@ exports.getVideoData = async function(event, context) {
         body: JSON.stringify(video)
     };
 };
+exports.getVideoData.handler = exports.getVideoData;
