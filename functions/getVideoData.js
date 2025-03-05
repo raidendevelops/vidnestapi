@@ -64,8 +64,9 @@ exports.handler = async function(event, context) {
             return {
                 statusCode: 201,
                 headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json"
+                            "Access-Control-Allow-Origin": "*",  // Allow all origins
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",  // Allow POST and GET
+        "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ success: true, video: newVideo })
             };
@@ -85,8 +86,9 @@ exports.handler = async function(event, context) {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
+                        "Access-Control-Allow-Origin": "*",  // Allow all origins
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",  // Allow POST and GET
+        "Content-Type": "application/json"
             },
             body: JSON.stringify(Object.values(videos))
         };
@@ -129,8 +131,9 @@ exports.handler = async function(event, context) {
     return {
         statusCode: 200,
         headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json"
+                    "Access-Control-Allow-Origin": "*",  // Allow all origins
+        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",  // Allow POST and GET
+        "Content-Type": "application/json"
         },
         body: JSON.stringify(video)
     };
