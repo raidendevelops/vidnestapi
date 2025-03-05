@@ -82,11 +82,10 @@ exports.uploadVideo = async function(event, context) {
         };
     }
 };
-exports.uploadVideo.handler = exports.uploadVideo;
 
 // Handler for the "getVideoData" function
 exports.getVideoData = async function(event, context) {
-    const { id, getallvideos } = event.queryStringParameters;
+    const { id, getallvideos, search } = event.queryStringParameters;
 
     if (getallvideos === 'true') {
         return {
@@ -96,6 +95,21 @@ exports.getVideoData = async function(event, context) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(Object.values(videos))
+        };
+    }
+    if (search) {
+        const query = search.toLowerCase();
+        const searchResults = Object.values(videos).filter(video =>
+            video.title.toLowerCase().includes(query) ||
+            video.description.toLowerCase().includes(query)
+        );
+        return {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(searchResults)
         };
     }
 
@@ -126,4 +140,6 @@ exports.getVideoData = async function(event, context) {
         body: JSON.stringify(video)
     };
 };
+
+exports.uploadVideo.handler = exports.uploadVideo;
 exports.getVideoData.handler = exports.getVideoData;
