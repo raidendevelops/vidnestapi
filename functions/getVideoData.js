@@ -13,8 +13,8 @@ let videos = {
     },
     2: {
         id: 2,
-        title: "SML Movie Compliation!",
-        description: "Sml movie compliation",
+        title: "SML Movie Compilation!",
+        description: "Sml movie compilation",
         likes: 30,
         dislikes: 1,
         creator: "@testuser",
@@ -24,8 +24,40 @@ let videos = {
     }
 };
 
+// Add a new video to the in-memory data
+function addNewVideo(videoData) {
+    const newId = Object.keys(videos).length + 1;
+    videos[newId] = {
+        id: newId,
+        title: videoData.title,
+        description: videoData.description,
+        likes: 0,
+        dislikes: 0,
+        creator: '@testuser',
+        creatorProfilePic: "libr/img/testimg.jpg",
+        video: videoData.video, // URL from Filestack
+        thumbnail: videoData.thumbnail // URL for the thumbnail image
+    };
+}
+
+// Handler for the "uploadVideo" function
+exports.uploadVideo = async function(event, context) {
+    const videoData = JSON.parse(event.body);
+
+    addNewVideo(videoData);
+
+    return {
+        statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ success: true })
+    };
+};
+
 // Handler for the "getVideoData" function
-exports.handler = async function(event, context) {
+exports.getVideoData = async function(event, context) {
     const { id, getallvideos } = event.queryStringParameters; // Get video ID or 'getallvideos' parameter
     
     // If 'getallvideos=true' parameter is provided, return all videos
