@@ -1,5 +1,7 @@
+// videos.js
+
 // In-memory data for videos
-let videos = {
+const videos = {
     1: {
         id: 1,
         title: "SML Movie: Snow Day",
@@ -26,8 +28,8 @@ let videos = {
 
 // Add a new video to the in-memory data
 function addNewVideo(videoData) {
-    if (!videoData || !videoData.title || !videoData.description || !videoData.video || !videoData.thumbnail){
-        console.log("invalid video data");
+    if (!videoData || !videoData.title || !videoData.description || !videoData.video || !videoData.thumbnail) {
+        console.log("Invalid video data");
         return false;
     }
     const newId = Object.keys(videos).length + 1;
@@ -39,8 +41,8 @@ function addNewVideo(videoData) {
         dislikes: 0,
         creator: '@testuser',
         creatorProfilePic: "libr/img/testimg.jpg",
-        video: videoData.video, // URL from Filestack
-        thumbnail: videoData.thumbnail // URL for the thumbnail image
+        video: videoData.video,
+        thumbnail: videoData.thumbnail
     };
     return true;
 }
@@ -49,7 +51,7 @@ function addNewVideo(videoData) {
 exports.uploadVideo = async function(event, context) {
     try {
         const videoData = JSON.parse(event.body);
-        if(addNewVideo(videoData)){
+        if (addNewVideo(videoData)) {
             return {
                 statusCode: 200,
                 headers: {
