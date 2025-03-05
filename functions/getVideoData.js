@@ -1,5 +1,3 @@
-// getvideodata.js
-
 // In-memory data for videos
 const videos = {
     1: {
@@ -26,11 +24,55 @@ const videos = {
     }
 };
 
-// Handler for the "getVideoData" function
-exports.handler = async function(event, context) { // Corrected export
+// Track the next available video ID
+let nextVideoId = Object.keys(videos).length + 1;
+
+// Handler function
+exports.handler = async function(event, context) {
+    if (event.httpMethod === "POST") {
+        try {
+            const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
+
+            if (!title || !description || !creator || !video || !thumbnail) {
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ error: "Missing required video fields" })
+                };
+            }
+
+            const newVideo = {
+                id: nextVideoId++,
+                title,
+                description,
+                creator,
+                creatorProfilePic: "libr/img/default-profile.jpg", // Default profile pic
+                video,
+                thumbnail,
+                likes: 0,
+                dislikes: 0
+            };
+
+            videos[newVideo.id] = newVideo;
+
+            return {
+                statusCode: 201,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ success: true, video: newVideo })
+            };
+        } catch (error) {
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "Failed to process request" })
+            };
+        }
+    }
+
     const { id, getallvideos, search } = event.queryStringParameters;
 
-    if (getallvideos === 'true') {
+    if (getallvideos === "true") {
         return {
             statusCode: 200,
             headers: {
@@ -40,6 +82,7 @@ exports.handler = async function(event, context) { // Corrected export
             body: JSON.stringify(Object.values(videos))
         };
     }
+
     if (search) {
         const query = search.toLowerCase();
         const searchResults = Object.values(videos).filter(video =>
@@ -64,7 +107,6 @@ exports.handler = async function(event, context) { // Corrected export
     }
 
     const videoId = parseInt(id, 10);
-
     const video = videos[videoId];
 
     if (!video) {
