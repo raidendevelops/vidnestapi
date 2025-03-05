@@ -2,23 +2,23 @@
 let videos = {
     1: {
         id: 1,
-        title: "Example Video",
-        description: "This is an example video description.",
+        title: "SML Movie: Snow Day",
+        description: "Junior, Joseph, Cody, and Jeffy have a snow day! \n https://smlmerch.com",
         likes: 120,
         dislikes: 4,
         creator: "@testuser",
-        creatorProfilePic: "https://via.placeholder.com/40",
+        creatorProfilePic: "libr/img/testimg.jpg",
         video: "libr/videos/examplevideo.mp4",
-        thumbnail: "libr/img/video_thumbnail.jpg"
+        thumbnail: "libr/img/test.jpg"
     },
     2: {
         id: 2,
-        title: "Another Video",
-        description: "Another example video.",
+        title: "SML Movie Compliation!",
+        description: "Sml movie compliation",
         likes: 30,
         dislikes: 1,
         creator: "@testuser",
-        creatorProfilePic: "https://via.placeholder.com/40",
+        creatorProfilePic: "libr/img/testimg.jpg",
         video: "libr/videos/anothervideo.mp4",
         thumbnail: "libr/img/another_video_thumbnail.jpg"
     }
