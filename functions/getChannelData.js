@@ -18,9 +18,9 @@ exports.handler = async function(event, context) {
             videos: [
                 {
                     id: 1,
-                    title: "Sample Video 1",
-                    description: "This is a sample video description",
-                    thumbnail: "libr/img/video_thumbnail.jpg"
+                    title: "SML Movie: Snow Day",
+                    description: "ffsf",
+                    thumbnail: "libr/img/test.jpg"
                 }
             ]
         }
