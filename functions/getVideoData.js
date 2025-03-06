@@ -1,4 +1,6 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: '../.env' }); // Adjust the path if necessary
+console.log("Mongo URI:", process.env.MONGO_URI); // Debugging line to check if the environment variable is loaded
+
 const { MongoClient } = require('mongodb');
 
 // MongoDB Connection
