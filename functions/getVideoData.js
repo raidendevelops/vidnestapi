@@ -1,7 +1,8 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
+
+console.log('MONGO:', process.env.MONGO_URI); // Debugging line to check if the environment variable is loaded
 
 // MongoDB Connection
-console.log('MONGO:', process.env.MONGO_URI);
 const client = new MongoClient(process.env.MONGO_URI);
 let db, videosCollection;
 
@@ -47,7 +48,7 @@ exports.handler = async function(event) {
 
             return {
                 statusCode: 201,
-                body: JSON.stringify({ success: true, video: newVideo, id: result.insertedId })
+                body: JSON.stringify({ success: true, video: { ...newVideo, id: result.insertedId }, id: result.insertedId })
             };
         } catch (error) {
             console.error('Error adding video:', error);
@@ -64,9 +65,14 @@ exports.handler = async function(event) {
         if (getallvideos === 'true') {
             try {
                 const allVideos = await videosCollection.find({}).toArray();
+                const formattedVideos = allVideos.map(video => ({
+                    ...video,
+                    id: video._id,
+                    _id: undefined
+                }));
                 return {
                     statusCode: 200,
-                    body: JSON.stringify(allVideos)
+                    body: JSON.stringify(formattedVideos)
                 };
             } catch (error) {
                 return {
@@ -85,10 +91,14 @@ exports.handler = async function(event) {
                         { description: { $regex: query, $options: 'i' } }
                     ]
                 }).toArray();
-
+                const formattedResults = searchResults.map(video => ({
+                    ...video,
+                    id: video._id,
+                    _id: undefined
+                }));
                 return {
                     statusCode: 200,
-                    body: JSON.stringify(searchResults)
+                    body: JSON.stringify(formattedResults)
                 };
             } catch (error) {
                 return {
@@ -100,16 +110,21 @@ exports.handler = async function(event) {
 
         if (id) {
             try {
-                const video = await videosCollection.findOne({ _id: new MongoClient.ObjectId(id) });
+                const video = await videosCollection.findOne({ _id: new ObjectId(id) });
                 if (!video) {
                     return {
                         statusCode: 404,
                         body: JSON.stringify({ error: 'Video not found' })
                     };
                 }
+                const formattedVideo = {
+                    ...video,
+                    id: video._id,
+                    _id: undefined
+                };
                 return {
                     statusCode: 200,
-                    body: JSON.stringify(video)
+                    body: JSON.stringify(formattedVideo)
                 };
             } catch (error) {
                 return {
