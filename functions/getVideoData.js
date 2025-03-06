@@ -6,22 +6,31 @@ console.log('MONGO:', process.env.MONGO_URI); // Debugging line to check if the 
 const client = new MongoClient(process.env.MONGO_URI);
 let db, videosCollection;
 
-// Connect to the database
 async function connectDB() {
-    try {
-        await client.connect();
-        db = client.db('vidnest'); // Database name
-        videosCollection = db.collection('videos'); // Collection name
-        console.log('✅ Connected to MongoDB');
-    } catch (error) {
-        console.error('❌ MongoDB Connection Error:', error);
+    if (!db) {
+        try {
+            await client.connect();
+            db = client.db('vidnest'); // Database name
+            videosCollection = db.collection('videos'); // Collection name
+            console.log('✅ Connected to MongoDB');
+        } catch (error) {
+            console.error('❌ MongoDB Connection Error:', error);
+            throw error; // Rethrow the error so it can be caught and handled
+        }
     }
 }
-connectDB();
 
-// Handler function
 exports.handler = async function(event) {
     console.log('Received event:', JSON.stringify(event, null, 2)); // Log the received event
+
+    try {
+        await connectDB(); // Ensure the database connection is established
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Failed to connect to database' })
+        };
+    }
 
     if (event.httpMethod === 'POST') {
         try {
