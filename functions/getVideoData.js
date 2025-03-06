@@ -21,6 +21,8 @@ connectDB();
 
 // Handler function
 exports.handler = async function(event) {
+    console.log('Received event:', JSON.stringify(event, null, 2)); // Log the received event
+
     if (event.httpMethod === 'POST') {
         try {
             const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
@@ -65,6 +67,8 @@ exports.handler = async function(event) {
         if (getallvideos === 'true') {
             try {
                 const allVideos = await videosCollection.find({}).toArray();
+                console.log('Fetched all videos:', JSON.stringify(allVideos, null, 2)); // Log the fetched videos
+
                 const formattedVideos = allVideos.map(video => ({
                     ...video,
                     id: video._id,
@@ -75,6 +79,7 @@ exports.handler = async function(event) {
                     body: JSON.stringify(formattedVideos)
                 };
             } catch (error) {
+                console.error('Error fetching all videos:', error);
                 return {
                     statusCode: 500,
                     body: JSON.stringify({ error: 'Failed to fetch videos' })
@@ -91,6 +96,8 @@ exports.handler = async function(event) {
                         { description: { $regex: query, $options: 'i' } }
                     ]
                 }).toArray();
+                console.log('Search results:', JSON.stringify(searchResults, null, 2)); // Log the search results
+
                 const formattedResults = searchResults.map(video => ({
                     ...video,
                     id: video._id,
@@ -101,6 +108,7 @@ exports.handler = async function(event) {
                     body: JSON.stringify(formattedResults)
                 };
             } catch (error) {
+                console.error('Error searching videos:', error);
                 return {
                     statusCode: 500,
                     body: JSON.stringify({ error: 'Failed to search videos' })
@@ -117,6 +125,8 @@ exports.handler = async function(event) {
                         body: JSON.stringify({ error: 'Video not found' })
                     };
                 }
+                console.log('Fetched video by ID:', JSON.stringify(video, null, 2)); // Log the fetched video
+
                 const formattedVideo = {
                     ...video,
                     id: video._id,
@@ -127,6 +137,7 @@ exports.handler = async function(event) {
                     body: JSON.stringify(formattedVideo)
                 };
             } catch (error) {
+                console.error('Error fetching video by ID:', error);
                 return {
                     statusCode: 500,
                     body: JSON.stringify({ error: 'Failed to fetch video' })
