@@ -28,11 +28,11 @@ exports.handler = async function(event) {
     } catch (error) {
         return {
             statusCode: 500,
-                headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+            },
             body: JSON.stringify({ error: 'Failed to connect to database' })
         };
     }
@@ -44,11 +44,11 @@ exports.handler = async function(event) {
             if (!title || !description || !creator || !video || !thumbnail) {
                 return {
                     statusCode: 400,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify({ error: 'Missing required fields' })
                 };
             }
@@ -69,22 +69,22 @@ exports.handler = async function(event) {
 
             return {
                 statusCode: 201,
-                    headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                },
                 body: JSON.stringify({ success: true, video: { ...newVideo, id: result.insertedId }, id: result.insertedId })
             };
         } catch (error) {
             console.error('Error adding video:', error);
             return {
                 statusCode: 500,
-                    headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                },
                 body: JSON.stringify({ error: 'Failed to add video' })
             };
         }
@@ -105,22 +105,22 @@ exports.handler = async function(event) {
                 }));
                 return {
                     statusCode: 200,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify(formattedVideos)
                 };
             } catch (error) {
                 console.error('Error fetching all videos:', error);
                 return {
                     statusCode: 500,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify({ error: 'Failed to fetch videos' })
                 };
             }
@@ -144,22 +144,22 @@ exports.handler = async function(event) {
                 }));
                 return {
                     statusCode: 200,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify(formattedResults)
                 };
             } catch (error) {
                 console.error('Error searching videos:', error);
                 return {
                     statusCode: 500,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify({ error: 'Failed to search videos' })
                 };
             }
@@ -171,11 +171,11 @@ exports.handler = async function(event) {
                 if (!video) {
                     return {
                         statusCode: 404,
-                            headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                        },
                         body: JSON.stringify({ error: 'Video not found' })
                     };
                 }
@@ -188,17 +188,22 @@ exports.handler = async function(event) {
                 };
                 return {
                     statusCode: 200,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify(formattedVideo)
                 };
             } catch (error) {
                 console.error('Error fetching video by ID:', error);
                 return {
                     statusCode: 500,
-                        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-    
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
                     body: JSON.stringify({ error: 'Failed to fetch video' })
                 };
             }
@@ -207,6 +212,11 @@ exports.handler = async function(event) {
 
     return {
         statusCode: 405,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+        },
         body: JSON.stringify({ error: 'Method not allowed' })
     };
 };
