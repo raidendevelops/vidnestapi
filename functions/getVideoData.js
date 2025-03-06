@@ -29,11 +29,16 @@ let nextVideoId = Object.keys(videos).length + 1;
 
 // Handler function
 exports.handler = async function(event, context) {
+    console.log("Request received:", event);  // Log the incoming event (request)
+
     // Handle POST requests for video submission
     if (event.httpMethod === "POST") {
         try {
             // Parse the incoming request body
             const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
+
+            // Debugging log: Log the received request body
+            console.log("Received POST request body:", { title, description, creator, video, thumbnail });
 
             // Step 1: Check if all required fields are provided
             if (!title || !description || !creator || !video || !thumbnail) {
