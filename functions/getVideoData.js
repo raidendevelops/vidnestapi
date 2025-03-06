@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
-console.log('MONGO:', process.env.MONGO_URI); // Debugging line to check if the environment variable is loaded
+console.log('MONGO_URI:', process.env.MONGO_URI); // Debugging line to check if the environment variable is loaded
 
 // MongoDB Connection
 const client = new MongoClient(process.env.MONGO_URI);
