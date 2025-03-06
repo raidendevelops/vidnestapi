@@ -11,17 +11,6 @@ const videos = {
         video: "libr/videos/examplevideo.mp4",
         thumbnail: "libr/img/test.jpg"
     },
-    2: {
-        id: 2,
-        title: "SML Movie Compilation!",
-        description: "Sml movie compilation",
-        likes: 30,
-        dislikes: 1,
-        creator: "@testuser",
-        creatorProfilePic: "libr/img/testimg.jpg",
-        video: "libr/videos/anothervideo.mp4",
-        thumbnail: "libr/img/another_video_thumbnail.jpg"
-    }
 };
 
 // Track the next available video ID
