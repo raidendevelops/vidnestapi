@@ -1,5 +1,5 @@
-require("dotenv").config();
-const { MongoClient } = require("mongodb");
+require('dotenv').config({ path: '../.env' });
+const { MongoClient } = require('mongodb');
 
 // MongoDB Connection
 const client = new MongoClient(process.env.MONGO_URI);
@@ -9,25 +9,25 @@ let db, videosCollection;
 async function connectDB() {
     try {
         await client.connect();
-        db = client.db("vidnest"); // Database name
-        videosCollection = db.collection("videos"); // Collection name
-        console.log("✅ Connected to MongoDB");
+        db = client.db('vidnest'); // Database name
+        videosCollection = db.collection('videos'); // Collection name
+        console.log('✅ Connected to MongoDB');
     } catch (error) {
-        console.error("❌ MongoDB Connection Error:", error);
+        console.error('❌ MongoDB Connection Error:', error);
     }
 }
 connectDB();
 
 // Handler function
 exports.handler = async function(event) {
-    if (event.httpMethod === "POST") {
+    if (event.httpMethod === 'POST') {
         try {
             const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
 
             if (!title || !description || !creator || !video || !thumbnail) {
                 return {
                     statusCode: 400,
-                    body: JSON.stringify({ error: "Missing required fields" })
+                    body: JSON.stringify({ error: 'Missing required fields' })
                 };
             }
 
@@ -35,7 +35,7 @@ exports.handler = async function(event) {
                 title,
                 description,
                 creator,
-                creatorProfilePic: "libr/img/default-profile.jpg",
+                creatorProfilePic: 'libr/img/default-profile.jpg',
                 video,
                 thumbnail,
                 likes: 0,
@@ -50,18 +50,18 @@ exports.handler = async function(event) {
                 body: JSON.stringify({ success: true, video: newVideo, id: result.insertedId })
             };
         } catch (error) {
-            console.error("Error adding video:", error);
+            console.error('Error adding video:', error);
             return {
                 statusCode: 500,
-                body: JSON.stringify({ error: "Failed to add video" })
+                body: JSON.stringify({ error: 'Failed to add video' })
             };
         }
     }
 
-    if (event.httpMethod === "GET") {
+    if (event.httpMethod === 'GET') {
         const { id, getallvideos, search } = event.queryStringParameters;
 
-        if (getallvideos === "true") {
+        if (getallvideos === 'true') {
             try {
                 const allVideos = await videosCollection.find({}).toArray();
                 return {
@@ -71,7 +71,7 @@ exports.handler = async function(event) {
             } catch (error) {
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({ error: "Failed to fetch videos" })
+                    body: JSON.stringify({ error: 'Failed to fetch videos' })
                 };
             }
         }
@@ -81,8 +81,8 @@ exports.handler = async function(event) {
                 const query = search.toLowerCase();
                 const searchResults = await videosCollection.find({
                     $or: [
-                        { title: { $regex: query, $options: "i" } },
-                        { description: { $regex: query, $options: "i" } }
+                        { title: { $regex: query, $options: 'i' } },
+                        { description: { $regex: query, $options: 'i' } }
                     ]
                 }).toArray();
 
@@ -93,7 +93,7 @@ exports.handler = async function(event) {
             } catch (error) {
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({ error: "Failed to search videos" })
+                    body: JSON.stringify({ error: 'Failed to search videos' })
                 };
             }
         }
@@ -104,7 +104,7 @@ exports.handler = async function(event) {
                 if (!video) {
                     return {
                         statusCode: 404,
-                        body: JSON.stringify({ error: "Video not found" })
+                        body: JSON.stringify({ error: 'Video not found' })
                     };
                 }
                 return {
@@ -114,9 +114,14 @@ exports.handler = async function(event) {
             } catch (error) {
                 return {
                     statusCode: 500,
-                    body: JSON.stringify({ error: "Failed to fetch video" })
+                    body: JSON.stringify({ error: 'Failed to fetch video' })
                 };
             }
         }
     }
 
+    return {
+        statusCode: 405,
+        body: JSON.stringify({ error: 'Method not allowed' })
+    };
+};
