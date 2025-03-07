@@ -38,55 +38,114 @@ exports.handler = async function(event) {
     }
 
     if (event.httpMethod === 'POST') {
-        try {
-            const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
+        // New Video
+        if (event.path === '/newVideo') {
+            try {
+                const { title, description, creator, video, thumbnail } = JSON.parse(event.body);
 
-            if (!title || !description || !creator || !video || !thumbnail) {
+                if (!title || !description || !creator || !video || !thumbnail) {
+                    return {
+                        statusCode: 400,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                        },
+                        body: JSON.stringify({ error: 'Missing required fields' })
+                    };
+                }
+
+                const newVideo = {
+                    title,
+                    description,
+                    creator,
+                    creatorProfilePic: 'libr/img/default-profile.jpg',
+                    video,
+                    thumbnail,
+                    likes: 0,
+                    dislikes: 0,
+                    createdAt: new Date(),
+                    comments: {}
+                };
+
+                const result = await videosCollection.insertOne(newVideo);
+
                 return {
-                    statusCode: 400,
+                    statusCode: 201,
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Headers': 'Content-Type',
                         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
                     },
-                    body: JSON.stringify({ error: 'Missing required fields' })
+                    body: JSON.stringify({ success: true, video: { ...newVideo, id: result.insertedId }, id: result.insertedId })
+                };
+            } catch (error) {
+                console.error('Error adding video:', error);
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
+                    body: JSON.stringify({ error: 'Failed to add video' })
                 };
             }
+        }
 
-            const newVideo = {
-                title,
-                description,
-                creator,
-                creatorProfilePic: 'libr/img/default-profile.jpg',
-                video,
-                thumbnail,
-                likes: 0,
-                dislikes: 0,
-                createdAt: new Date()
-            };
+        // New Comment
+        if (event.path === '/newComment') {
+            try {
+                const { videoId, message, creatorName, creatorProfile } = JSON.parse(event.body);
 
-            const result = await videosCollection.insertOne(newVideo);
+                if (!videoId || !message || !creatorName || !creatorProfile) {
+                    return {
+                        statusCode: 400,
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Headers': 'Content-Type',
+                            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                        },
+                        body: JSON.stringify({ error: 'Missing required fields' })
+                    };
+                }
 
-            return {
-                statusCode: 201,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-                },
-                body: JSON.stringify({ success: true, video: { ...newVideo, id: result.insertedId }, id: result.insertedId })
-            };
-        } catch (error) {
-            console.error('Error adding video:', error);
-            return {
-                statusCode: 500,
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Content-Type',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-                },
-                body: JSON.stringify({ error: 'Failed to add video' })
-            };
+                const commentId = new ObjectId();
+                const newComment = {
+                    message,
+                    likes: 0,
+                    dislikes: 0,
+                    creatorname: creatorName,
+                    dateCreated: new Date(),
+                    creatorprofile: creatorProfile
+                };
+
+                const result = await videosCollection.updateOne(
+                    { _id: new ObjectId(videoId) },
+                    { $set: { [`comments.${commentId}`]: newComment } }
+                );
+
+                return {
+                    statusCode: 201,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
+                    body: JSON.stringify({ success: true, commentId, comment: newComment })
+                };
+            } catch (error) {
+                console.error('Error adding comment:', error);
+                return {
+                    statusCode: 500,
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'Content-Type',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                    },
+                    body: JSON.stringify({ error: 'Failed to add comment' })
+                };
+            }
         }
     }
 
@@ -202,7 +261,7 @@ exports.handler = async function(event) {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Headers': 'Content-Type',
-                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE,
                     },
                     body: JSON.stringify({ error: 'Failed to fetch video' })
                 };
